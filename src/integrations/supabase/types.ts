@@ -14,16 +14,298 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_data: {
+        Row: {
+          calories: number
+          date: string
+          day: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          calories?: number
+          date: string
+          day: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          date?: string
+          day?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coach_athlete_relations: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      meal_logs: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          meals: Json | null
+          total_calories: number | null
+          total_protein: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          meals?: Json | null
+          total_calories?: number | null
+          total_protein?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          meals?: Json | null
+          total_calories?: number | null
+          total_protein?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          avatar_url: string | null
+          body_fat: number | null
+          consistency_score: number | null
+          created_at: string
+          daily_calories_target: number | null
+          email: string | null
+          fitness_score: number | null
+          full_name: string | null
+          gender: string | null
+          goal_description: string | null
+          goals: string[] | null
+          heart_rate: number | null
+          height: number | null
+          id: string
+          injuries: Json | null
+          onboarding_completed: boolean
+          recovery_score: number | null
+          target_weight: number | null
+          updated_at: string
+          water_glasses: number | null
+          water_target: number | null
+          weight: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          avatar_url?: string | null
+          body_fat?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          daily_calories_target?: number | null
+          email?: string | null
+          fitness_score?: number | null
+          full_name?: string | null
+          gender?: string | null
+          goal_description?: string | null
+          goals?: string[] | null
+          heart_rate?: number | null
+          height?: number | null
+          id: string
+          injuries?: Json | null
+          onboarding_completed?: boolean
+          recovery_score?: number | null
+          target_weight?: number | null
+          updated_at?: string
+          water_glasses?: number | null
+          water_target?: number | null
+          weight?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          avatar_url?: string | null
+          body_fat?: number | null
+          consistency_score?: number | null
+          created_at?: string
+          daily_calories_target?: number | null
+          email?: string | null
+          fitness_score?: number | null
+          full_name?: string | null
+          gender?: string | null
+          goal_description?: string | null
+          goals?: string[] | null
+          heart_rate?: number | null
+          height?: number | null
+          id?: string
+          injuries?: Json | null
+          onboarding_completed?: boolean
+          recovery_score?: number | null
+          target_weight?: number | null
+          updated_at?: string
+          water_glasses?: number | null
+          water_target?: number | null
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weight_history: {
+        Row: {
+          id: string
+          recorded_at: string
+          user_id: string
+          week_label: string
+          weight: number
+        }
+        Insert: {
+          id?: string
+          recorded_at?: string
+          user_id: string
+          week_label: string
+          weight: number
+        }
+        Update: {
+          id?: string
+          recorded_at?: string
+          user_id?: string
+          week_label?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      workout_logs: {
+        Row: {
+          completion_rate: number
+          created_at: string
+          date: string
+          id: string
+          notes: string | null
+          plan_id: string | null
+          user_id: string
+        }
+        Insert: {
+          completion_rate?: number
+          created_at?: string
+          date: string
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          user_id: string
+        }
+        Update: {
+          completion_rate?: number
+          created_at?: string
+          date?: string
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      coaches_athlete: {
+        Args: { _athlete_id: string; _coach_id: string }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "coach" | "athlete" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +432,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["coach", "athlete", "admin"],
+    },
   },
 } as const
