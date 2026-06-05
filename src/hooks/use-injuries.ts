@@ -54,7 +54,7 @@ export function useCreateInjury() {
 export function useUpdateInjury() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Injury> }) => {
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Omit<Injury, "athlete" | "id">> }) => {
       const { error } = await supabase.from("injuries").update(patch).eq("id", id);
       if (error) throw error;
     },

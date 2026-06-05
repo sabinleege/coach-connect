@@ -54,7 +54,7 @@ export function useCreateFollowUp() {
 export function useUpdateFollowUp() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, patch }: { id: string; patch: Partial<FollowUp> }) => {
+    mutationFn: async ({ id, patch }: { id: string; patch: Partial<Omit<FollowUp, "athlete" | "id">> }) => {
       const { error } = await supabase.from("follow_ups").update(patch).eq("id", id);
       if (error) throw error;
     },
