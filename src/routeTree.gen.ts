@@ -16,7 +16,10 @@ import { Route as AuthenticatedCoachRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedCoachIndexRouteImport } from './routes/_authenticated/coach.index'
 import { Route as AuthenticatedCoachSettingsRouteImport } from './routes/_authenticated/coach.settings'
 import { Route as AuthenticatedCoachNotificationsRouteImport } from './routes/_authenticated/coach.notifications'
+import { Route as AuthenticatedCoachInjuriesRouteImport } from './routes/_authenticated/coach.injuries'
+import { Route as AuthenticatedCoachFollowUpsRouteImport } from './routes/_authenticated/coach.follow-ups'
 import { Route as AuthenticatedCoachAthletesRouteImport } from './routes/_authenticated/coach.athletes'
+import { Route as AuthenticatedCoachAnalyticsRouteImport } from './routes/_authenticated/coach.analytics'
 import { Route as AuthenticatedCoachAthletesAthleteIdRouteImport } from './routes/_authenticated/coach.athletes.$athleteId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -55,10 +58,28 @@ const AuthenticatedCoachNotificationsRoute =
     path: '/notifications',
     getParentRoute: () => AuthenticatedCoachRoute,
   } as any)
+const AuthenticatedCoachInjuriesRoute =
+  AuthenticatedCoachInjuriesRouteImport.update({
+    id: '/injuries',
+    path: '/injuries',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
+const AuthenticatedCoachFollowUpsRoute =
+  AuthenticatedCoachFollowUpsRouteImport.update({
+    id: '/follow-ups',
+    path: '/follow-ups',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
 const AuthenticatedCoachAthletesRoute =
   AuthenticatedCoachAthletesRouteImport.update({
     id: '/athletes',
     path: '/athletes',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
+const AuthenticatedCoachAnalyticsRoute =
+  AuthenticatedCoachAnalyticsRouteImport.update({
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedCoachRoute,
   } as any)
 const AuthenticatedCoachAthletesAthleteIdRoute =
@@ -72,7 +93,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/coach': typeof AuthenticatedCoachRouteWithChildren
+  '/coach/analytics': typeof AuthenticatedCoachAnalyticsRoute
   '/coach/athletes': typeof AuthenticatedCoachAthletesRouteWithChildren
+  '/coach/follow-ups': typeof AuthenticatedCoachFollowUpsRoute
+  '/coach/injuries': typeof AuthenticatedCoachInjuriesRoute
   '/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/coach/settings': typeof AuthenticatedCoachSettingsRoute
   '/coach/': typeof AuthenticatedCoachIndexRoute
@@ -81,7 +105,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/coach/analytics': typeof AuthenticatedCoachAnalyticsRoute
   '/coach/athletes': typeof AuthenticatedCoachAthletesRouteWithChildren
+  '/coach/follow-ups': typeof AuthenticatedCoachFollowUpsRoute
+  '/coach/injuries': typeof AuthenticatedCoachInjuriesRoute
   '/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/coach/settings': typeof AuthenticatedCoachSettingsRoute
   '/coach': typeof AuthenticatedCoachIndexRoute
@@ -93,7 +120,10 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/coach': typeof AuthenticatedCoachRouteWithChildren
+  '/_authenticated/coach/analytics': typeof AuthenticatedCoachAnalyticsRoute
   '/_authenticated/coach/athletes': typeof AuthenticatedCoachAthletesRouteWithChildren
+  '/_authenticated/coach/follow-ups': typeof AuthenticatedCoachFollowUpsRoute
+  '/_authenticated/coach/injuries': typeof AuthenticatedCoachInjuriesRoute
   '/_authenticated/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/_authenticated/coach/settings': typeof AuthenticatedCoachSettingsRoute
   '/_authenticated/coach/': typeof AuthenticatedCoachIndexRoute
@@ -105,7 +135,10 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/coach'
+    | '/coach/analytics'
     | '/coach/athletes'
+    | '/coach/follow-ups'
+    | '/coach/injuries'
     | '/coach/notifications'
     | '/coach/settings'
     | '/coach/'
@@ -114,7 +147,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/coach/analytics'
     | '/coach/athletes'
+    | '/coach/follow-ups'
+    | '/coach/injuries'
     | '/coach/notifications'
     | '/coach/settings'
     | '/coach'
@@ -125,7 +161,10 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/coach'
+    | '/_authenticated/coach/analytics'
     | '/_authenticated/coach/athletes'
+    | '/_authenticated/coach/follow-ups'
+    | '/_authenticated/coach/injuries'
     | '/_authenticated/coach/notifications'
     | '/_authenticated/coach/settings'
     | '/_authenticated/coach/'
@@ -189,11 +228,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCoachNotificationsRouteImport
       parentRoute: typeof AuthenticatedCoachRoute
     }
+    '/_authenticated/coach/injuries': {
+      id: '/_authenticated/coach/injuries'
+      path: '/injuries'
+      fullPath: '/coach/injuries'
+      preLoaderRoute: typeof AuthenticatedCoachInjuriesRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
+    '/_authenticated/coach/follow-ups': {
+      id: '/_authenticated/coach/follow-ups'
+      path: '/follow-ups'
+      fullPath: '/coach/follow-ups'
+      preLoaderRoute: typeof AuthenticatedCoachFollowUpsRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
     '/_authenticated/coach/athletes': {
       id: '/_authenticated/coach/athletes'
       path: '/athletes'
       fullPath: '/coach/athletes'
       preLoaderRoute: typeof AuthenticatedCoachAthletesRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
+    '/_authenticated/coach/analytics': {
+      id: '/_authenticated/coach/analytics'
+      path: '/analytics'
+      fullPath: '/coach/analytics'
+      preLoaderRoute: typeof AuthenticatedCoachAnalyticsRouteImport
       parentRoute: typeof AuthenticatedCoachRoute
     }
     '/_authenticated/coach/athletes/$athleteId': {
@@ -222,14 +282,20 @@ const AuthenticatedCoachAthletesRouteWithChildren =
   )
 
 interface AuthenticatedCoachRouteChildren {
+  AuthenticatedCoachAnalyticsRoute: typeof AuthenticatedCoachAnalyticsRoute
   AuthenticatedCoachAthletesRoute: typeof AuthenticatedCoachAthletesRouteWithChildren
+  AuthenticatedCoachFollowUpsRoute: typeof AuthenticatedCoachFollowUpsRoute
+  AuthenticatedCoachInjuriesRoute: typeof AuthenticatedCoachInjuriesRoute
   AuthenticatedCoachNotificationsRoute: typeof AuthenticatedCoachNotificationsRoute
   AuthenticatedCoachSettingsRoute: typeof AuthenticatedCoachSettingsRoute
   AuthenticatedCoachIndexRoute: typeof AuthenticatedCoachIndexRoute
 }
 
 const AuthenticatedCoachRouteChildren: AuthenticatedCoachRouteChildren = {
+  AuthenticatedCoachAnalyticsRoute: AuthenticatedCoachAnalyticsRoute,
   AuthenticatedCoachAthletesRoute: AuthenticatedCoachAthletesRouteWithChildren,
+  AuthenticatedCoachFollowUpsRoute: AuthenticatedCoachFollowUpsRoute,
+  AuthenticatedCoachInjuriesRoute: AuthenticatedCoachInjuriesRoute,
   AuthenticatedCoachNotificationsRoute: AuthenticatedCoachNotificationsRoute,
   AuthenticatedCoachSettingsRoute: AuthenticatedCoachSettingsRoute,
   AuthenticatedCoachIndexRoute: AuthenticatedCoachIndexRoute,
@@ -257,3 +323,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
