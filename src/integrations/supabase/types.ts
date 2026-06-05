@@ -68,6 +68,158 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_notes: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          content: string
+          created_at: string
+          id: string
+          updated_at: string
+          visible_to_athlete: boolean
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          content: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          visible_to_athlete?: boolean
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          visible_to_athlete?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coach_notes_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coach_notes_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      follow_ups: {
+        Row: {
+          athlete_id: string
+          coach_id: string
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          athlete_id: string
+          coach_id: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          coach_id?: string
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follow_ups_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follow_ups_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      injuries: {
+        Row: {
+          athlete_id: string
+          body_part: string
+          created_at: string
+          date_reported: string
+          expected_return: string | null
+          id: string
+          injury_type: string
+          notes: string | null
+          recovery_timeline: Json | null
+          severity: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          athlete_id: string
+          body_part: string
+          created_at?: string
+          date_reported?: string
+          expected_return?: string | null
+          id?: string
+          injury_type: string
+          notes?: string | null
+          recovery_timeline?: Json | null
+          severity: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          athlete_id?: string
+          body_part?: string
+          created_at?: string
+          date_reported?: string
+          expected_return?: string | null
+          id?: string
+          injury_type?: string
+          notes?: string | null
+          recovery_timeline?: Json | null
+          severity?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "injuries_athlete_id_fkey"
+            columns: ["athlete_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meal_logs: {
         Row: {
           created_at: string
@@ -134,6 +286,7 @@ export type Database = {
       profiles: {
         Row: {
           activity_level: string | null
+          adherence_percentage: number | null
           age: number | null
           avatar_url: string | null
           body_fat: number | null
@@ -150,7 +303,9 @@ export type Database = {
           height: number | null
           id: string
           injuries: Json | null
+          last_active_at: string | null
           onboarding_completed: boolean
+          primary_goal: string | null
           recovery_score: number | null
           target_weight: number | null
           updated_at: string
@@ -160,6 +315,7 @@ export type Database = {
         }
         Insert: {
           activity_level?: string | null
+          adherence_percentage?: number | null
           age?: number | null
           avatar_url?: string | null
           body_fat?: number | null
@@ -176,7 +332,9 @@ export type Database = {
           height?: number | null
           id: string
           injuries?: Json | null
+          last_active_at?: string | null
           onboarding_completed?: boolean
+          primary_goal?: string | null
           recovery_score?: number | null
           target_weight?: number | null
           updated_at?: string
@@ -186,6 +344,7 @@ export type Database = {
         }
         Update: {
           activity_level?: string | null
+          adherence_percentage?: number | null
           age?: number | null
           avatar_url?: string | null
           body_fat?: number | null
@@ -202,7 +361,9 @@ export type Database = {
           height?: number | null
           id?: string
           injuries?: Json | null
+          last_active_at?: string | null
           onboarding_completed?: boolean
+          primary_goal?: string | null
           recovery_score?: number | null
           target_weight?: number | null
           updated_at?: string
