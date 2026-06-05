@@ -4,8 +4,12 @@ import { AppSidebar } from "@/components/coach/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { useCoachProfile } from "@/hooks/use-coach-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, Bell } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
+import { useCoachRealtime } from "@/hooks/use-coach-realtime";
 
 export const Route = createFileRoute("/_authenticated/coach")({
   component: CoachLayout,
@@ -13,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/coach")({
 
 function CoachLayout() {
   const { data: me } = useCoachProfile();
+  useCoachRealtime();
   const initials = (me?.full_name || me?.email || "C").split(" ").map((p: string) => p[0]).join("").slice(0, 2).toUpperCase();
 
   return (
@@ -27,7 +32,15 @@ function CoachLayout() {
               <Input placeholder="Search athletes…" className="h-9 w-72 pl-9" />
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <span className="hidden text-xs uppercase tracking-widest text-muted-foreground sm:inline">Coach</span>
+              <Button asChild variant="ghost" size="icon" className="relative">
+                <Link to="/coach/notifications" aria-label="Notifications">
+                  <Bell className="h-4 w-4" />
+                </Link>
+              </Button>
+              <div className="hidden items-center gap-2 sm:flex">
+                <span className="text-sm font-medium">{me?.full_name || "Coach"}</span>
+                <Badge variant="secondary" className="bg-primary/15 text-primary text-[10px] uppercase tracking-widest">Coach</Badge>
+              </div>
               <Avatar className="h-8 w-8">
                 <AvatarImage src={me?.avatar_url ?? undefined} />
                 <AvatarFallback className="bg-primary/20 text-primary text-xs">{initials}</AvatarFallback>

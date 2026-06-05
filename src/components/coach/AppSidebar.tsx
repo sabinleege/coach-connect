@@ -1,15 +1,19 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell } from "lucide-react";
+import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell, ShieldAlert, ClipboardList, BarChart3 } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { AthleteRosterList } from "./AthleteRosterList";
 
 const items = [
   { title: "Overview", url: "/coach", icon: LayoutDashboard, exact: true },
   { title: "Athletes", url: "/coach/athletes", icon: Users, exact: false },
+  { title: "Injuries", url: "/coach/injuries", icon: ShieldAlert, exact: false },
+  { title: "Follow-ups", url: "/coach/follow-ups", icon: ClipboardList, exact: false },
+  { title: "Analytics", url: "/coach/analytics", icon: BarChart3, exact: false },
   { title: "Notifications", url: "/coach/notifications", icon: Bell, exact: false },
   { title: "Settings", url: "/coach/settings", icon: Settings, exact: false },
 ];
@@ -64,6 +68,15 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {!collapsed && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Roster</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <AthleteRosterList />
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
 
       <SidebarFooter>
