@@ -1,12 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useAthleteDetail } from "@/hooks/use-coach-data";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatCard } from "@/components/coach/StatCard";
-import { ArrowLeft, Activity, Flame, Heart, Scale } from "lucide-react";
+import { AthleteProfileCard } from "@/components/coach/AthleteProfileCard";
+import { CoachNoteEditor } from "@/components/coach/CoachNoteEditor";
+import { FollowUpQueue } from "@/components/coach/FollowUpQueue";
+import { ArrowLeft, Activity, Flame, Heart, Scale, ShieldAlert } from "lucide-react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { useInjuries, useCreateInjury } from "@/hooks/use-injuries";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export const Route = createFileRoute("/_authenticated/coach/athletes/$athleteId")({
   component: AthleteDetail,
@@ -15,6 +24,7 @@ export const Route = createFileRoute("/_authenticated/coach/athletes/$athleteId"
 function AthleteDetail() {
   const { athleteId } = Route.useParams();
   const { data, isLoading } = useAthleteDetail(athleteId);
+  const { data: injuries = [] } = useInjuries({ athleteId });
   const p = data?.profile;
 
   if (isLoading) return <div className="mx-auto max-w-6xl">Loading…</div>;
@@ -27,30 +37,15 @@ function AthleteDetail() {
     </div>
   );
 
-  const initials = (p.full_name || "?").split(" ").map((s: string) => s[0]).join("").slice(0, 2).toUpperCase();
   const weightData = (data?.weights ?? []).map((w: any) => ({ label: w.week_label, weight: Number(w.weight) }));
   const activityData = (data?.activity ?? []).slice().reverse().map((a: any) => ({ day: a.day, calories: a.calories }));
 
   return (
     <div className="mx-auto max-w-6xl">
       <BackLink />
-
-      <header className="mt-4 flex flex-wrap items-center gap-5 rounded-2xl border border-border bg-card p-6">
-        <Avatar className="h-16 w-16">
-          <AvatarImage src={p.avatar_url ?? undefined} />
-          <AvatarFallback className="bg-primary/20 text-primary text-lg">{initials}</AvatarFallback>
-        </Avatar>
-        <div className="min-w-0">
-          <h1 className="font-display text-2xl font-semibold">{p.full_name || "Unnamed athlete"}</h1>
-          <div className="text-sm text-muted-foreground">{p.email}</div>
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-            {p.age && <span>{p.age} yrs</span>}
-            {p.gender && <span>{p.gender}</span>}
-            {p.height && <span>{p.height} cm</span>}
-            {p.goal_description && <span className="text-foreground/80">Goal: {p.goal_description}</span>}
-          </div>
-        </div>
-      </header>
+      <div className="mt-4">
+        <AthleteProfileCard profile={p as any} />
+      </div>
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={Flame} label="Fitness" value={p.fitness_score ?? "—"} />
@@ -64,6 +59,9 @@ function AthleteDetail() {
           <TabsTrigger value="progress">Progress</TabsTrigger>
           <TabsTrigger value="workouts">Workouts</TabsTrigger>
           <TabsTrigger value="activity">Activity</TabsTrigger>
+          <TabsTrigger value="injuries">Injuries</TabsTrigger>
+          <TabsTrigger value="follow-ups">Follow-ups</TabsTrigger>
+          <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
 
         <TabsContent value="progress" className="mt-6">
@@ -115,8 +113,92 @@ function AthleteDetail() {
             )}
           </ChartCard>
         </TabsContent>
+
+        <TabsContent value="injuries" className="mt-6">
+          <ChartCard title={`Injuries (${injuries.length})`}>
+            <div className="mb-4 flex justify-end">
+              <LogInjuryDialog athleteId={athleteId} />
+            </div>
+            {injuries.length === 0 ? <Empty msg="No injuries logged." /> : (
+              <ul className="divide-y divide-border">
+                {injuries.map((i) => (
+                  <li key={i.id} className="flex items-center justify-between py-3">
+                    <div>
+                      <div className="font-medium capitalize">{i.body_part} — {i.injury_type}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {new Date(i.date_reported).toLocaleDateString()} • Severity {i.severity}
+                      </div>
+                    </div>
+                    <Badge variant="secondary" className="capitalize">{i.status}</Badge>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </ChartCard>
+        </TabsContent>
+
+        <TabsContent value="follow-ups" className="mt-6">
+          <FollowUpQueue athleteId={athleteId} />
+        </TabsContent>
+
+        <TabsContent value="notes" className="mt-6">
+          <CoachNoteEditor athleteId={athleteId} />
+        </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function LogInjuryDialog({ athleteId }: { athleteId: string }) {
+  const create = useCreateInjury();
+  const [open, setOpen] = useState(false);
+  const [bodyPart, setBodyPart] = useState("");
+  const [injuryType, setInjuryType] = useState("");
+  const [severity, setSeverity] = useState("3");
+  const [expectedReturn, setExpectedReturn] = useState("");
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline"><ShieldAlert className="mr-2 h-4 w-4" /> Log injury</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>Log injury</DialogTitle></DialogHeader>
+        <div className="grid gap-3">
+          <Input placeholder="Body part (e.g. knee)" value={bodyPart} onChange={(e) => setBodyPart(e.target.value)} />
+          <Input placeholder="Type (e.g. sprain)" value={injuryType} onChange={(e) => setInjuryType(e.target.value)} />
+          <div className="grid grid-cols-2 gap-2">
+            <Select value={severity} onValueChange={setSeverity}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {[1, 2, 3, 4, 5].map((n) => <SelectItem key={n} value={String(n)}>Severity {n}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Input type="date" value={expectedReturn} onChange={(e) => setExpectedReturn(e.target.value)} />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+          <Button
+            disabled={!bodyPart || !injuryType || create.isPending}
+            onClick={() => create.mutate(
+              {
+                athlete_id: athleteId,
+                body_part: bodyPart,
+                injury_type: injuryType,
+                severity: Number(severity),
+                status: "active",
+                date_reported: new Date().toISOString().slice(0, 10),
+                expected_return: expectedReturn || null,
+                notes: null,
+                recovery_timeline: null,
+              },
+              { onSuccess: () => { setOpen(false); setBodyPart(""); setInjuryType(""); setExpectedReturn(""); setSeverity("3"); } },
+            )}
+          >Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
