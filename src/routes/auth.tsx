@@ -18,7 +18,9 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const seed = useServerFn(seedDemoData);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -46,8 +48,43 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Account created. Check your email to confirm.");
+    toast.success("Account created.");
+    // auto-confirm is on; session should exist
+    const { data: s } = await supabase.auth.getSession();
+    if (s.session) navigate({ to: "/coach" });
   }
+
+  async function handleDemo() {
+    setDemoLoading(true);
+    try {
+      const demoEmail = "demo.coach@securefit.demo";
+      const demoPass = "DemoCoach!2026";
+      let { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: demoEmail, password: demoPass,
+      });
+      if (signInErr) {
+        const { error: signUpErr } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPass,
+          options: { data: { full_name: "Demo Coach", role: "coach" } },
+        });
+        if (signUpErr && !signUpErr.message.toLowerCase().includes("registered")) {
+          throw signUpErr;
+        }
+        const retry = await supabase.auth.signInWithPassword({ email: demoEmail, password: demoPass });
+        if (retry.error) throw retry.error;
+      }
+      toast.success("Seeding demo athletes…");
+      await seed({});
+      toast.success("Welcome to the demo");
+      navigate({ to: "/coach" });
+    } catch (e: any) {
+      toast.error(e.message || "Demo failed");
+    } finally {
+      setDemoLoading(false);
+    }
+  }
+
 
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
