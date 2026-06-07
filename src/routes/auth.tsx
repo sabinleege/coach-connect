@@ -97,6 +97,16 @@ function AuthPage() {
           <p className="text-sm text-muted-foreground">Manage your athletes with confidence.</p>
         </div>
 
+        <div className="mb-4">
+          <Button onClick={handleDemo} disabled={demoLoading} variant="secondary" className="w-full">
+            {demoLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+            Try the demo (one click)
+          </Button>
+          <p className="mt-2 text-center text-xs text-muted-foreground">
+            Signs you in as a demo coach with 6 sample athletes.
+          </p>
+        </div>
+
         <div className="rounded-2xl border border-border bg-card p-6 shadow-xl">
           <Tabs defaultValue="signin">
             <TabsList className="grid w-full grid-cols-2">
