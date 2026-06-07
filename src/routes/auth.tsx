@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Dumbbell, Loader2 } from "lucide-react";
+import { Dumbbell, Loader2, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { seedDemoData } from "@/lib/demo.functions";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Coach sign in — Secure-Fit Coach" }] }),
@@ -15,7 +18,9 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const seed = useServerFn(seedDemoData);
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -43,8 +48,43 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    toast.success("Account created. Check your email to confirm.");
+    toast.success("Account created.");
+    // auto-confirm is on; session should exist
+    const { data: s } = await supabase.auth.getSession();
+    if (s.session) navigate({ to: "/coach" });
   }
+
+  async function handleDemo() {
+    setDemoLoading(true);
+    try {
+      const demoEmail = "demo.coach@securefit.demo";
+      const demoPass = "DemoCoach!2026";
+      let { error: signInErr } = await supabase.auth.signInWithPassword({
+        email: demoEmail, password: demoPass,
+      });
+      if (signInErr) {
+        const { error: signUpErr } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPass,
+          options: { data: { full_name: "Demo Coach", role: "coach" } },
+        });
+        if (signUpErr && !signUpErr.message.toLowerCase().includes("registered")) {
+          throw signUpErr;
+        }
+        const retry = await supabase.auth.signInWithPassword({ email: demoEmail, password: demoPass });
+        if (retry.error) throw retry.error;
+      }
+      toast.success("Seeding demo athletes…");
+      await seed({});
+      toast.success("Welcome to the demo");
+      navigate({ to: "/coach" });
+    } catch (e: any) {
+      toast.error(e.message || "Demo failed");
+    } finally {
+      setDemoLoading(false);
+    }
+  }
+
 
   return (
     <div className="grid min-h-screen place-items-center bg-background px-4">
@@ -55,6 +95,16 @@ function AuthPage() {
           </div>
           <h1 className="font-display text-2xl font-semibold">Secure-Fit Coach</h1>
           <p className="text-sm text-muted-foreground">Manage your athletes with confidence.</p>
+        </div>
+
+        <div className="mb-4">
+          <Button onClick={handleDemo} disabled={demoLoading} variant="secondary" className="w-full">
+            {demoLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+            Try the demo (one click)
+          </Button>
+          <p className="mt-2 text-center text-xs text-muted-foreground">
+            Signs you in as a demo coach with 6 sample athletes.
+          </p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-6 shadow-xl">
