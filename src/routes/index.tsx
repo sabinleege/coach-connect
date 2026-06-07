@@ -51,14 +51,14 @@ function Landing() {
               to="/auth"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground shadow-[var(--glow-primary)] hover:opacity-90"
             >
-              Get started <ArrowRight className="h-4 w-4" />
+              Try the demo <ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href="https://github.com/sabinleege/secure-fit-ai"
+            <Link
+              to="/auth"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 font-medium hover:bg-accent/10"
             >
-              Athlete app
-            </a>
+              Coach sign in
+            </Link>
           </div>
         </section>
 
