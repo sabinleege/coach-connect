@@ -6,7 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Dumbbell, Loader2 } from "lucide-react";
+import { Dumbbell, Loader2, Sparkles } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { seedDemoData } from "@/lib/demo.functions";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Coach sign in — Secure-Fit Coach" }] }),
