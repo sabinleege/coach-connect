@@ -42,6 +42,7 @@ export type Database = {
         Row: {
           athlete_id: string
           coach_id: string
+          covered_by_coach: boolean
           created_at: string
           id: string
           notes: string | null
@@ -51,6 +52,7 @@ export type Database = {
         Insert: {
           athlete_id: string
           coach_id: string
+          covered_by_coach?: boolean
           created_at?: string
           id?: string
           notes?: string | null
@@ -60,9 +62,49 @@ export type Database = {
         Update: {
           athlete_id?: string
           coach_id?: string
+          covered_by_coach?: boolean
           created_at?: string
           id?: string
           notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coach_invites: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          coach_id: string
+          created_at: string
+          email: string | null
+          expires_at: string
+          id: string
+          invite_code: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          coach_id: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          invite_code?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          coach_id?: string
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          invite_code?: string
           status?: string
           updated_at?: string
         }
@@ -373,6 +415,93 @@ export type Database = {
         }
         Relationships: []
       }
+      sessions: {
+        Row: {
+          athlete_ids: string[]
+          coach_id: string
+          created_at: string
+          duration_minutes: number
+          id: string
+          location: string | null
+          notes: string | null
+          scheduled_at: string
+          session_type: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          athlete_ids?: string[]
+          coach_id: string
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          location?: string | null
+          notes?: string | null
+          scheduled_at: string
+          session_type?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          athlete_ids?: string[]
+          coach_id?: string
+          created_at?: string
+          duration_minutes?: number
+          id?: string
+          location?: string | null
+          notes?: string | null
+          scheduled_at?: string
+          session_type?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          covers_athletes: boolean
+          created_at: string
+          current_period_end: string | null
+          id: string
+          plan_type: string
+          seat_limit: number | null
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          covers_athletes?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_type?: string
+          seat_limit?: number | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          covers_athletes?: boolean
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          plan_type?: string
+          seat_limit?: number | null
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -453,6 +582,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_coach_invite: { Args: { _code: string }; Returns: string }
       coaches_athlete: {
         Args: { _athlete_id: string; _coach_id: string }
         Returns: boolean
