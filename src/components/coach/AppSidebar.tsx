@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell, ShieldAlert, ClipboardList, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell, ShieldAlert, ClipboardList, BarChart3, CalendarDays, UserPlus } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -11,6 +11,8 @@ import { AthleteRosterList } from "./AthleteRosterList";
 const items = [
   { title: "Overview", url: "/coach", icon: LayoutDashboard, exact: true },
   { title: "Athletes", url: "/coach/athletes", icon: Users, exact: false },
+  { title: "Sessions", url: "/coach/sessions", icon: CalendarDays, exact: false },
+  { title: "Invites", url: "/coach/invites", icon: UserPlus, exact: false },
   { title: "Injuries", url: "/coach/injuries", icon: ShieldAlert, exact: false },
   { title: "Follow-ups", url: "/coach/follow-ups", icon: ClipboardList, exact: false },
   { title: "Analytics", url: "/coach/analytics", icon: BarChart3, exact: false },
