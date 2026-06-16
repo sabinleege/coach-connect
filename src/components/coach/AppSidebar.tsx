@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell, ShieldAlert, ClipboardList, BarChart3, CalendarDays, UserPlus } from "lucide-react";
+import { LayoutDashboard, Users, Settings, LogOut, Dumbbell, Bell, ShieldAlert, ClipboardList, BarChart3, CalendarDays, UserPlus, CreditCard } from "lucide-react";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter, useSidebar,
@@ -17,6 +17,7 @@ const items = [
   { title: "Follow-ups", url: "/coach/follow-ups", icon: ClipboardList, exact: false },
   { title: "Analytics", url: "/coach/analytics", icon: BarChart3, exact: false },
   { title: "Notifications", url: "/coach/notifications", icon: Bell, exact: false },
+  { title: "Subscription", url: "/coach/subscription", icon: CreditCard, exact: false },
   { title: "Settings", url: "/coach/settings", icon: Settings, exact: false },
 ];
 

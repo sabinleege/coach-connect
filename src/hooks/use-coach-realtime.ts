@@ -21,6 +21,22 @@ export function useCoachRealtime() {
         qc.invalidateQueries({ queryKey: ["athlete"] });
         qc.invalidateQueries({ queryKey: ["my-athletes"] });
       })
+      .on("postgres_changes", { event: "*", schema: "public", table: "sessions" }, () =>
+        qc.invalidateQueries({ queryKey: ["coach-sessions"] }),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "coach_invites" }, () =>
+        qc.invalidateQueries({ queryKey: ["coach-invites"] }),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "coach_athlete_relations" }, () => {
+        qc.invalidateQueries({ queryKey: ["my-athletes"] });
+        qc.invalidateQueries({ queryKey: ["my-athletes-coverage"] });
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "subscriptions" }, () =>
+        qc.invalidateQueries({ queryKey: ["subscription"] }),
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications" }, () =>
+        qc.invalidateQueries({ queryKey: ["notifications"] }),
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(ch);
