@@ -1,23 +1,53 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/coach/AppSidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { useCoachProfile } from "@/hooks/use-coach-data";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Link } from "@tanstack/react-router";
 import { useCoachRealtime } from "@/hooks/use-coach-realtime";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated/coach")({
   component: CoachLayout,
 });
 
+function useIsCoach() {
+  return useQuery({
+    queryKey: ["is-coach"],
+    queryFn: async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return false;
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", u.user.id);
+      return (data ?? []).some((r: any) => r.role === "coach");
+    },
+  });
+}
+
 function CoachLayout() {
   const { data: me } = useCoachProfile();
+  const { data: isCoach, isLoading: roleLoading } = useIsCoach();
+  const navigate = useNavigate();
   useCoachRealtime();
+
+  useEffect(() => {
+    if (!roleLoading && isCoach === false) navigate({ to: "/", replace: true });
+  }, [roleLoading, isCoach, navigate]);
+
+  if (roleLoading || isCoach === false) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   const initials = (me?.full_name || me?.email || "C").split(" ").map((p: string) => p[0]).join("").slice(0, 2).toUpperCase();
 
   return (
