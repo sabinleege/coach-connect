@@ -14,14 +14,15 @@ export const Route = createFileRoute("/_authenticated/coach/subscription")({
   component: SubscriptionPage,
 });
 
-const PLANS = [
+type Plan = { id: "starter" | "pro" | "team"; name: string; price: string; seats: number; popular?: boolean; features: string[] };
+const PLANS: Plan[] = [
   { id: "starter", name: "Starter", price: "$19", seats: 5,
     features: ["Up to 5 athletes", "Roster + analytics", "Manual invites"] },
   { id: "pro", name: "Pro", price: "$49", seats: 25, popular: true,
     features: ["Up to 25 athletes", "AI coaching assistant", "Sessions & court booking", "Realtime alerts"] },
   { id: "team", name: "Team", price: "$129", seats: 100,
     features: ["Up to 100 athletes", "Covers athlete subscriptions", "Priority support", "Custom branding"] },
-] as const;
+];
 
 function SubscriptionPage() {
   const { data: sub, isLoading } = useMySubscription();

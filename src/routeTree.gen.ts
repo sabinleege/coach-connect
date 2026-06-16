@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedCoachRouteImport } from './routes/_authenticated/coach'
 import { Route as AuthenticatedCoachIndexRouteImport } from './routes/_authenticated/coach.index'
+import { Route as AuthenticatedCoachSubscriptionRouteImport } from './routes/_authenticated/coach.subscription'
 import { Route as AuthenticatedCoachSettingsRouteImport } from './routes/_authenticated/coach.settings'
 import { Route as AuthenticatedCoachSessionsRouteImport } from './routes/_authenticated/coach.sessions'
 import { Route as AuthenticatedCoachNotificationsRouteImport } from './routes/_authenticated/coach.notifications'
@@ -54,6 +55,12 @@ const AuthenticatedCoachIndexRoute = AuthenticatedCoachIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedCoachRoute,
 } as any)
+const AuthenticatedCoachSubscriptionRoute =
+  AuthenticatedCoachSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedCoachRoute,
+  } as any)
 const AuthenticatedCoachSettingsRoute =
   AuthenticatedCoachSettingsRouteImport.update({
     id: '/settings',
@@ -122,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/coach/sessions': typeof AuthenticatedCoachSessionsRoute
   '/coach/settings': typeof AuthenticatedCoachSettingsRoute
+  '/coach/subscription': typeof AuthenticatedCoachSubscriptionRoute
   '/coach/': typeof AuthenticatedCoachIndexRoute
   '/coach/athletes/$athleteId': typeof AuthenticatedCoachAthletesAthleteIdRoute
 }
@@ -137,6 +145,7 @@ export interface FileRoutesByTo {
   '/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/coach/sessions': typeof AuthenticatedCoachSessionsRoute
   '/coach/settings': typeof AuthenticatedCoachSettingsRoute
+  '/coach/subscription': typeof AuthenticatedCoachSubscriptionRoute
   '/coach': typeof AuthenticatedCoachIndexRoute
   '/coach/athletes/$athleteId': typeof AuthenticatedCoachAthletesAthleteIdRoute
 }
@@ -155,6 +164,7 @@ export interface FileRoutesById {
   '/_authenticated/coach/notifications': typeof AuthenticatedCoachNotificationsRoute
   '/_authenticated/coach/sessions': typeof AuthenticatedCoachSessionsRoute
   '/_authenticated/coach/settings': typeof AuthenticatedCoachSettingsRoute
+  '/_authenticated/coach/subscription': typeof AuthenticatedCoachSubscriptionRoute
   '/_authenticated/coach/': typeof AuthenticatedCoachIndexRoute
   '/_authenticated/coach/athletes/$athleteId': typeof AuthenticatedCoachAthletesAthleteIdRoute
 }
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/coach/notifications'
     | '/coach/sessions'
     | '/coach/settings'
+    | '/coach/subscription'
     | '/coach/'
     | '/coach/athletes/$athleteId'
   fileRoutesByTo: FileRoutesByTo
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/coach/notifications'
     | '/coach/sessions'
     | '/coach/settings'
+    | '/coach/subscription'
     | '/coach'
     | '/coach/athletes/$athleteId'
   id:
@@ -205,6 +217,7 @@ export interface FileRouteTypes {
     | '/_authenticated/coach/notifications'
     | '/_authenticated/coach/sessions'
     | '/_authenticated/coach/settings'
+    | '/_authenticated/coach/subscription'
     | '/_authenticated/coach/'
     | '/_authenticated/coach/athletes/$athleteId'
   fileRoutesById: FileRoutesById
@@ -258,6 +271,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/coach/'
       preLoaderRoute: typeof AuthenticatedCoachIndexRouteImport
+      parentRoute: typeof AuthenticatedCoachRoute
+    }
+    '/_authenticated/coach/subscription': {
+      id: '/_authenticated/coach/subscription'
+      path: '/subscription'
+      fullPath: '/coach/subscription'
+      preLoaderRoute: typeof AuthenticatedCoachSubscriptionRouteImport
       parentRoute: typeof AuthenticatedCoachRoute
     }
     '/_authenticated/coach/settings': {
@@ -350,6 +370,7 @@ interface AuthenticatedCoachRouteChildren {
   AuthenticatedCoachNotificationsRoute: typeof AuthenticatedCoachNotificationsRoute
   AuthenticatedCoachSessionsRoute: typeof AuthenticatedCoachSessionsRoute
   AuthenticatedCoachSettingsRoute: typeof AuthenticatedCoachSettingsRoute
+  AuthenticatedCoachSubscriptionRoute: typeof AuthenticatedCoachSubscriptionRoute
   AuthenticatedCoachIndexRoute: typeof AuthenticatedCoachIndexRoute
 }
 
@@ -362,6 +383,7 @@ const AuthenticatedCoachRouteChildren: AuthenticatedCoachRouteChildren = {
   AuthenticatedCoachNotificationsRoute: AuthenticatedCoachNotificationsRoute,
   AuthenticatedCoachSessionsRoute: AuthenticatedCoachSessionsRoute,
   AuthenticatedCoachSettingsRoute: AuthenticatedCoachSettingsRoute,
+  AuthenticatedCoachSubscriptionRoute: AuthenticatedCoachSubscriptionRoute,
   AuthenticatedCoachIndexRoute: AuthenticatedCoachIndexRoute,
 }
 
